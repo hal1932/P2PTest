@@ -16,11 +16,8 @@ def get_sync(url):
     return response.getvalue()
 
 
-def post_sync(url, data, jsonize_data=True):
+def post_sync(url, data):
     response = StringIO.StringIO()
-
-    if jsonize_data:
-        data = json.dumps(data)
 
     c = pycurl.Curl()
     c.setopt(pycurl.URL, url)

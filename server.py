@@ -1,6 +1,9 @@
 # encoding: utf-8
 from __future__ import print_function
 
+import config
+import protocols
+
 import nsq
 import tornado.gen
 
@@ -9,23 +12,24 @@ import functools
 import json
 import time
 
-NSQD_TCP_ADDRESSES = ['127.0.0.1:4150', ]
-
 
 def on_update_client_status(message):
     message.enable_async()
-    print(message.body)
+    data = protocols.deserialize(message.body)
     message.finish()
 
-    time.sleep(1)
+    if data.operation == 'register':
+        print('register: {}, {}'.format(data.host, data.user))
+    else:
+        print(data)
 
 
 def main(args):
     nsq.Reader(
         topic='p2ptest_clients',
-        channel='server',
-        message_handler=functools.partial(on_update_client_status),
-        nsqd_tcp_addresses=NSQD_TCP_ADDRESSES,
+        channel='test',
+        message_handler=on_update_client_status,
+        nsqd_tcp_addresses=config.NSQD_TCP_ADDRESSES,
     )
     nsq.run()
 

@@ -4,11 +4,13 @@ from __future__ import print_function
 import config
 import protocols
 import http
+import content_server
 
 import nsq
 
 import sys
 import functools
+import time
 
 NSQD_HTTP_ADDRESS = '127.0.0.1:4151'
 NSQD_TCP_ADDRESSES = ['127.0.0.1:4150', ]
@@ -31,6 +33,12 @@ def main(args):
     if not register_as_client():
         return -1
 
+    server = content_server.ContentServer(1234)
+    server.start()
+
+    time.sleep(5)
+    server.stop()
+
     '''
     nsq.Reader(
         topic='p2ptest_jobs',
@@ -40,6 +48,7 @@ def main(args):
     )
     nsq.run()
     '''
+
 
 if __name__ == '__main__':
     result = main(sys.argv)

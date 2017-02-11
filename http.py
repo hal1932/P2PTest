@@ -11,6 +11,10 @@ import time
 import urlparse
 
 
+RESULT_SUCCESS = 'OK'
+NSQ_HTTP_PUB_RESULT_SUCCESS = 'OK'
+
+
 def get_sync(url, timeout=None):
     response = StringIO.StringIO()
 

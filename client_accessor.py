@@ -3,6 +3,7 @@ import utils
 import protocols
 import log
 import http
+import config
 
 import functools
 import urllib
@@ -16,7 +17,7 @@ class ClientAccessor(object):
 
     def start_accepting_query(self):
         utils.create_nsq_reader(
-            'p2ptest_query_clients',
+            config.TOPIC_QUERY_CLIENTS,
             functools.partial(ClientAccessor.__on_received_query, instance=self)
         )
 
@@ -50,7 +51,10 @@ class ClientAccessor(object):
 
         if error is None:
             query = arguments['query']
-            result = self.__find_all()
+            if query == config.QUERY_CLIENTS_FINDALL:
+                result = self.__find_all()
+            else:
+                error = 'invalid query: {}'.format(data)
 
         if error is not None:
             log.warning('clients query error: {}'.format(error))

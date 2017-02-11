@@ -33,7 +33,7 @@ class ClientPool(object):
 
     def start_accepting_clients(self):
         utils.create_nsq_reader(
-            'p2ptest_register_client',
+            config.TOPIC_REGISTER_CLIENT,
             functools.partial(ClientPool.__on_register_client, instance=self)
         )
 
@@ -99,7 +99,7 @@ class ClientPool(object):
 
     def __register_client_complete(self, host, notification_port, error=None):
         if error is None:
-            result = 'OK'
+            result = http.RESULT_SUCCESS
         else:
             result = urllib.quote(error)
 

@@ -30,7 +30,8 @@ def main(args):
     cv = content_server.ContentServer(content_port).start()
 
     query_receiving_port = max(notification_port, content_port) + 1
-    other_clients = _request_query_clients('find_all', query_receiving_port)
+    other_clients = _request_query_clients(
+        config.QUERY_CLIENTS_FINDALL, query_receiving_port)
     log.write(other_clients)
     time.sleep(10)
 
@@ -53,8 +54,8 @@ def _request_client_registration():
     import hostinfo
     data = data.replace(hostinfo.get_user(), str(random.randint(0, 100)))
 
-    code, result = http.nsq_pub_sync('p2ptest_register_client', data)
-    if code == 200 and result == 'OK':
+    code, result = http.nsq_pub_sync(config.TOPIC_REGISTER_CLIENT, data)
+    if code == 200 and result == http.NSQ_HTTP_PUB_RESULT_SUCCESS:
         return notification_port, content_port, None
 
     return 0, 0, result
@@ -68,7 +69,7 @@ def _wait_for_registration_complete(notification_port):
         return False
 
     result = http.wait_for_get_request(notification_port, _predicate)
-    if result['result'][0] != 'OK':
+    if result['result'][0] != http.RESULT_SUCCESS:
         return result['result'][0]
 
     return None
@@ -76,8 +77,8 @@ def _wait_for_registration_complete(notification_port):
 
 def _request_query_clients(query, receiving_port):
     data = protocols.query_clients(query, receiving_port)
-    code, result = http.nsq_pub_sync('p2ptest_query_clients', data)
-    if code != 200 or result != 'OK':
+    code, result = http.nsq_pub_sync(config.TOPIC_QUERY_CLIENTS, data)
+    if code != 200 or result != config.NSQ_HTTP_PUB_RESULT_SUCCESS:
         log.warning('failed to the request querying clients')
         return []
 

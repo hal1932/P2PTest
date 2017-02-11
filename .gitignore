@@ -47,3 +47,4 @@ Temporary Items
 .apdisk
 *.pyc
 nsq-0.3.8.windows-amd64.go1.6.2
+.idea/workspace.xml

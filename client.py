@@ -12,6 +12,7 @@ import sys
 import functools
 import time
 import random
+import json
 
 
 def main(args):
@@ -27,7 +28,12 @@ def main(args):
 
     log.write('start ContentServer at port {}'.format(content_port))
     cv = content_server.ContentServer(content_port).start()
-    time.sleep(3)
+
+    query_receiving_port = max(notification_port, content_port) + 1
+    other_clients = _request_query_clients('find_all', query_receiving_port)
+    log.write(other_clients)
+    time.sleep(10)
+
     cv.stop()
 
     '''
@@ -67,6 +73,26 @@ def _wait_for_registration_complete(notification_port):
 
     return None
 
+
+def _request_query_clients(query, receiving_port):
+    data = protocols.query_clients(query, receiving_port)
+    code, result = http.nsq_pub_sync('p2ptest_query_clients', data)
+    if code != 200 or result != 'OK':
+        log.warning('failed to the request querying clients')
+        return []
+
+    def _predicate(queries):
+        if 'result' in queries:
+            if len(queries['result']) == 1:
+                return True
+        return False
+
+    result = http.wait_for_get_request(receiving_port, _predicate)
+    try:
+        return json.loads(result['result'][0])
+    except Exception as e:
+        log.warning('failed to receive the result querying clients')
+        return []
 
 def _on_receive_jobs(message):
     message.enable_async()

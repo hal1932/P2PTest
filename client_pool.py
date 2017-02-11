@@ -4,6 +4,7 @@ import protocols
 import http
 import log
 import utils
+import client_info
 
 import pycurl
 
@@ -11,30 +12,6 @@ import functools
 import urllib
 import threading
 import time
-
-
-class _ClientInfo(object):
-
-    def __init__(self, host, user, content_port):
-        self.__host = host
-        self.__user = user
-        self.__content_port = content_port
-
-    @property
-    def host(self):
-        return self.__host
-
-    @property
-    def user(self):
-        return self.__user
-
-    @property
-    def ping_url(self):
-        return self.content_url + '/ping'
-
-    @property
-    def content_url(self):
-        return 'http://{}:{}'.format(self.host, self.__content_port)
 
 
 class ClientPool(object):
@@ -50,6 +27,10 @@ class ClientPool(object):
 
         self.__client_watcher_thread = _ClientWatcherThread(self.__clients, _on_client_disconnected)
 
+    @property
+    def clients(self):
+        return self.__clients
+
     def start_accepting_clients(self):
         utils.create_nsq_reader(
             'p2ptest_register_client',
@@ -63,27 +44,25 @@ class ClientPool(object):
 
     @staticmethod
     def __on_register_client(message, instance):
-        message.enable_async()
-        data = protocols.deserialize(message.body)
-        message.finish()
+        data = protocols.deserialize_nsq_message(message)
+
+        log.write(data)
 
         operation = data['ope']
         user = data['user']
         host = data['host']
         arguments = data['args']
 
-        log.write(data)
-
         error = None
 
         if error is None and operation != 'register':
             error = 'invalid registration request: {}'.format(data)
 
-        requisite_args = [
-            'notification_port',
-            'content_port',
-        ]
         if error is None:
+            requisite_args = [
+                'notification_port',
+                'content_port',
+            ]
             for requisite_arg in requisite_args:
                 if requisite_arg not in arguments:
                     error = 'invalid registration arguments: {}'.format(arguments)
@@ -110,7 +89,7 @@ class ClientPool(object):
             if not self.__register_client_complete(host, notification_port):
                 return 'client not found: {}:{}'.format(host, notification_port)
 
-        self.__clients.append(_ClientInfo(host, user, content_port))
+        self.__clients.append(client_info.ClientInfo(host, user, content_port))
 
         return None
 

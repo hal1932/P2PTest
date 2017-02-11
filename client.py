@@ -17,7 +17,7 @@ NSQD_TCP_ADDRESSES = ['127.0.0.1:4150', ]
 
 
 def main(args):
-    if not register_as_client():
+    if not _register_as_client():
         return -1
 
     server = content_server.ContentServer(1234)
@@ -30,21 +30,21 @@ def main(args):
     nsq.Reader(
         topic='p2ptest_jobs',
         channel='test',
-        message_handler=on_receive_jobs,
+        message_handler=_on_receive_jobs,
         nsqd_tcp_addresses=NSQD_TCP_ADDRESSES,
     )
     nsq.run()
     '''
 
 
-def register_as_client(content_port):
+def _register_as_client(content_port):
     url = 'http://{}/pub?topic=p2ptest_clients'.format(config.NSQD_HTTP_ADDRESS)
     data = protocols.registration(content_port)
     response = http.post_sync(url, data)
     return response == 'OK'
 
 
-def on_receive_jobs(message):
+def _on_receive_jobs(message):
     message.enable_async()
     print(message.body)
     message.finish()

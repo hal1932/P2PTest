@@ -18,13 +18,13 @@ def main(args):
     nsq.Reader(
         topic='p2ptest_clients',
         channel='test',
-        message_handler=functools.partial(on_update_client_status, clients),
+        message_handler=functools.partial(_on_update_client_status, clients),
         nsqd_tcp_addresses=config.NSQD_TCP_ADDRESSES,
     )
     nsq.run()
 
 
-def on_update_client_status(message, clients):
+def _on_update_client_status(message, clients):
     message.enable_async()
     data = protocols.deserialize(message.body)
     message.finish()

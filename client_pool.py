@@ -13,7 +13,7 @@ import threading
 import time
 
 
-class ClientInfo(object):
+class _ClientInfo(object):
 
     def __init__(self, host, user):
         self.__host = host
@@ -33,7 +33,7 @@ class ClientInfo(object):
 
     @property
     def content_url(self):
-        return 'http://{}:{}'.format(self.host, config.PEER_CONTENT_PORT)
+        return 'http://{}:{}'.format(self.host, config.PEER_CONTENT_PORT_BASE)
 
 
 class ClientPool(object):
@@ -101,7 +101,7 @@ class ClientPool(object):
             if not self.__register_client_complete(host, notification_port):
                 return 'client is disconnected: {}:{}'.format(host, notification_port)
 
-            self.__clients.append(ClientInfo(host, user))
+            self.__clients.append(_ClientInfo(host, user))
 
         return None
 
@@ -111,7 +111,8 @@ class ClientPool(object):
         else:
             result = urllib.quote(error)
 
-        code, _ = http.get_sync('http://{}:{}?result={}'.format(host, notification_port, result))
+        code, _ = http.get_sync(
+            'http://{}:{}?result={}'.format(host, notification_port, result))
         return code == 200
 
     def __test_register_client(self, host, user):

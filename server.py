@@ -7,7 +7,6 @@ import sys
 
 
 def main(args):
-    # クライアント待ち受け
     pool = client_pool.ClientPool()
     pool.start_accepting_clients()
 

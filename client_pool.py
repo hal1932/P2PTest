@@ -20,10 +20,20 @@ class ClientInfo(object):
         self.__user = user
 
     @property
-    def host(self): return self.__host
+    def host(self):
+        return self.__host
 
     @property
-    def user(self): return self.__user
+    def user(self):
+        return self.__user
+
+    @property
+    def ping_url(self):
+        return self.content_url + '/ping'
+
+    @property
+    def content_url(self):
+        return 'http://{}:{}'.format(self.host, config.PEER_CONTENT_PORT)
 
 
 class ClientPool(object):
@@ -134,9 +144,8 @@ class _ClientWatcherThread(threading.Thread):
 
             disconnected_clients = []
             for client in self.__clients:
-                url = 'http://{}:{}/ping'.format(client.host, config.PEER_CONTENT_PORT)
                 try:
-                    code, _ = http.get_sync(url, self.__timeout)
+                    code, _ = http.get_sync(client.ping_url, self.__timeout)
                 except pycurl.error as e:
                     if e.args[0] == pycurl.E_OPERATION_TIMEDOUT:
                         disconnected_clients.append(client)

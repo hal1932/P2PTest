@@ -58,7 +58,7 @@ class ClientPool(object):
         self.__client_watcher_thread.start()
 
     def stop_accepting_clients(self):
-        pass
+        raise NotImplementedError()
 
     @staticmethod
     def __on_register_client(message, instance):

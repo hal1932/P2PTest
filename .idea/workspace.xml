@@ -17,11 +17,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="client_pool.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="client_pool.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/client_pool.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="162">
-                  <caret line="84" column="58" lean-forward="true" selection-start-line="84" selection-start-column="58" selection-end-line="84" selection-end-column="58" />
+                <state relative-caret-position="630">
+                  <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
                   <folding>
                     <element signature="e#18#31#0" expanded="true" />
                   </folding>
@@ -32,34 +32,10 @@
           <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/server.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="288">
-                  <caret line="16" column="36" lean-forward="true" selection-start-line="16" selection-start-column="36" selection-end-line="16" selection-end-column="36" />
+                <state relative-caret-position="342">
+                  <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
                   <folding>
                     <element signature="e#18#36#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="client_accessor.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/client_accessor.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="427">
-                  <caret line="54" column="29" lean-forward="true" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
-                  <folding>
-                    <element signature="e#18#30#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="protocols.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/protocols.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="409">
-                  <caret line="24" column="9" lean-forward="true" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
-                  <folding>
-                    <element signature="e#18#33#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -69,11 +45,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="client.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="client.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/client.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="324">
-                  <caret line="36" column="13" lean-forward="true" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+                <state relative-caret-position="485">
+                  <caret line="88" column="0" lean-forward="true" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
                   <folding>
                     <element signature="e#18#31#0" expanded="true" />
                   </folding>
@@ -111,6 +87,29 @@
                 <state relative-caret-position="450">
                   <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="protocols.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/protocols.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="265">
+                  <caret line="16" column="22" lean-forward="false" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+                  <folding>
+                    <element signature="e#18#33#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="client_accessor.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/client_accessor.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="625">
+                  <folding>
+                    <element signature="e#18#30#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -154,11 +153,11 @@
         <option value="$PROJECT_DIR$/log.py" />
         <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/config.py" />
-        <option value="$PROJECT_DIR$/protocols.py" />
         <option value="$PROJECT_DIR$/client_info.py" />
-        <option value="$PROJECT_DIR$/client_pool.py" />
-        <option value="$PROJECT_DIR$/client_accessor.py" />
+        <option value="$PROJECT_DIR$/protocols.py" />
         <option value="$PROJECT_DIR$/client.py" />
+        <option value="$PROJECT_DIR$/client_accessor.py" />
+        <option value="$PROJECT_DIR$/client_pool.py" />
       </list>
     </option>
   </component>
@@ -550,16 +549,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/content_server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="22" column="29" lean-forward="true" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
-          <folding>
-            <element signature="e#18#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/http.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-666">
@@ -588,46 +577,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="36" lean-forward="true" selection-start-line="16" selection-start-column="36" selection-end-line="16" selection-end-column="36" />
-          <folding>
-            <element signature="e#18#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/protocols.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="24" column="9" lean-forward="true" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
-          <folding>
-            <element signature="e#18#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client_pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="84" column="58" lean-forward="true" selection-start-line="84" selection-start-column="58" selection-end-line="84" selection-end-column="58" />
-          <folding>
-            <element signature="e#18#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client_accessor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="54" column="29" lean-forward="true" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
-          <folding>
-            <element signature="e#18#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client_info.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -636,12 +585,61 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#18#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/protocols.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="16" column="22" lean-forward="false" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <folding>
+            <element signature="e#18#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="36" column="13" lean-forward="true" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+        <state relative-caret-position="485">
+          <caret line="88" column="0" lean-forward="true" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
           <folding>
             <element signature="e#18#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content_server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" column="29" lean-forward="true" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
+          <folding>
+            <element signature="e#18#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_pool.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+          <folding>
+            <element signature="e#18#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_accessor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <folding>
+            <element signature="e#18#30#0" expanded="true" />
           </folding>
         </state>
       </provider>

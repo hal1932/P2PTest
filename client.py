@@ -90,9 +90,10 @@ def _request_query_clients(query, receiving_port):
     result = http.wait_for_get_request(receiving_port, _predicate)
     try:
         return json.loads(result['result'][0])
-    except Exception as e:
-        log.warning('failed to receive the result querying clients')
+    except ValueError as e:
+        log.warning('failed to receive the result querying clients: {}'.format(e))
         return []
+
 
 def _on_receive_jobs(message):
     message.enable_async()

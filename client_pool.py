@@ -45,8 +45,10 @@ class ClientPool(object):
     @staticmethod
     def __on_register_client(message, instance):
         data = protocols.deserialize_nsq_message(message)
+        instance.__process_registration(data)
 
-        log.write(data)
+    def __process_registration(self, data):
+        # log.write(data)
 
         operation = data['ope']
         user = data['user']
@@ -71,14 +73,16 @@ class ClientPool(object):
         if error is None:
             notification_port = arguments['notification_port']
             content_port = arguments['content_port']
-            error = instance.__register_client(host, user, notification_port, content_port)
+            error = self.__register_client(host, user, notification_port, content_port)
 
         if error is not None:
             log.warning('registration error: {}'.format(error))
-            instance.__register_client_complete(host, notification_port, error)
+            if 'notification_port' in arguments:
+                notification_port = arguments['notification_port']
+                self.__register_client_complete(host, notification_port, error)
             return
 
-        log.write('accept client: {}, {}, {}'.format(host, user, content_port))
+        log.write('accept client: {}, {}:{}'.format(user, host, content_port))
 
     def __register_client(self, host, user, notification_port, content_port):
         with self.__clients_lock:
@@ -164,6 +168,7 @@ class _ClientWatcherThread(threading.Thread):
                     self.__on_client_disconnected(client)
 
             time.sleep(self.__polling_interval)
+            # time.sleep(1)
 
     def stop(self):
         self.__stop_event.set()

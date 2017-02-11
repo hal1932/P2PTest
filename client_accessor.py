@@ -23,14 +23,14 @@ class ClientAccessor(object):
     @staticmethod
     def __on_received_query(message, instance):
         data = protocols.deserialize_nsq_message(message)
-        instance.process_query(data)
+        instance.__process_query(data)
 
-    def process_query(self, data):
+    def __process_query(self, data):
+        # log.write(data)
+
         operation = data['ope']
         host = data['host']
         arguments = data['args']
-
-        log.write(data)
 
         error = None
         result = None
@@ -53,10 +53,17 @@ class ClientAccessor(object):
             result = self.__find_all()
 
         if error is not None:
-            pass
+            log.warning('clients query error: {}'.format(error))
+            if 'reply_port' in arguments:
+                reply_port = arguments['reply_port']
+                self.__send_result(host, reply_port, error)
+            return
+
+        reply_port = arguments['reply_port']
+        if not self.__send_result(host, reply_port, result):
+            log.warning('failed to query clients result: {}'.format(data))
         else:
-            reply_port = arguments['reply_port']
-            self.__send_result(host, reply_port, result)
+            log.write('send query clietns reuslt to {}:{}'.format(host, reply_port))
 
     def __find_all(self):
         def _serialize_client(client):

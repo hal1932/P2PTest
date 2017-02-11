@@ -15,9 +15,10 @@ import time
 
 class _ClientInfo(object):
 
-    def __init__(self, host, user):
+    def __init__(self, host, user, content_port):
         self.__host = host
         self.__user = user
+        self.__content_port = content_port
 
     @property
     def host(self):
@@ -33,7 +34,7 @@ class _ClientInfo(object):
 
     @property
     def content_url(self):
-        return 'http://{}:{}'.format(self.host, config.PEER_CONTENT_PORT_BASE)
+        return 'http://{}:{}'.format(self.host, self.__content_port)
 
 
 class ClientPool(object):
@@ -78,30 +79,38 @@ class ClientPool(object):
         if error is None and operation != 'register':
             error = 'invalid registration request: {}'.format(data)
 
-        if error is None and 'notification_port' not in arguments:
-            error = 'invalid registration arguments: {}'.format(arguments)
+        requisite_args = [
+            'notification_port',
+            'content_port',
+        ]
+        if error is None:
+            for requisite_arg in requisite_args:
+                if requisite_arg not in arguments:
+                    error = 'invalid registration arguments: {}'.format(arguments)
+                    break
 
         if error is None:
             notification_port = arguments['notification_port']
-            error = instance.__register_client(host, user, notification_port)
+            content_port = arguments['content_port']
+            error = instance.__register_client(host, user, notification_port, content_port)
 
         if error is not None:
             log.warning('registration error: {}'.format(error))
             instance.__register_client_complete(host, notification_port, error)
             return
 
-        log.write('accept client: {} {}'.format(host, user))
+        log.write('accept client: {}, {}, {}'.format(host, user, content_port))
 
-    def __register_client(self, host, user, notification_port):
+    def __register_client(self, host, user, notification_port, content_port):
         with self.__clients_lock:
             error = self.__test_register_client(host, user)
             if error is not None:
                 return error
 
             if not self.__register_client_complete(host, notification_port):
-                return 'client is disconnected: {}:{}'.format(host, notification_port)
+                return 'client not found: {}:{}'.format(host, notification_port)
 
-            self.__clients.append(_ClientInfo(host, user))
+        self.__clients.append(_ClientInfo(host, user, content_port))
 
         return None
 

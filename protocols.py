@@ -12,8 +12,13 @@ def deserialize(data):
     return json.loads(data)
 
 
-def registration(notification_port):
-    data = __create_container('register', {'notification_port': notification_port})
+def registration(notification_port, content_port):
+    data = __create_container(
+        'register',
+        {
+            'notification_port': notification_port,
+            'content_port': content_port,
+        })
     return serialize(data)
 
 

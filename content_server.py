@@ -20,5 +20,5 @@ class _ContentRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 class ContentServer(http.ServerBase):
 
-    def __init__(self, port=config.PEER_CONTENT_PORT_BASE):
+    def __init__(self, port):
         super(ContentServer, self).__init__('', port, _ContentRequestHandler)

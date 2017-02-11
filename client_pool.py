@@ -159,18 +159,26 @@ class _ClientWatcherThread(threading.Thread):
 
             disconnected_clients = []
             for client in self.__clients:
+                code = 0
+                timeout = False
                 try:
                     code, _ = http.get_sync(client.ping_url, self.__timeout)
                 except pycurl.error as e:
                     if e.args[0] == pycurl.E_OPERATION_TIMEDOUT:
-                        disconnected_clients.append(client)
+                        log.warning('ping to the client is timed out: {}'.format(client.ping_url))
+                        timeout = True
                     else:
                         raise e
 
-                if code == 200:
-                    log.write('check if client is alive: {}'.format(client.host))
-                else:
-                    pass
+                is_client_alive = not timeout
+                if is_client_alive and code == 200:
+                    log.write('client is alive: {}'.format(client.ping_url))
+                elif not timeout:
+                    log.warning('client may be dead: {}, {}'.format(code, client.ping_url))
+                    is_client_alive = False
+
+                if not is_client_alive:
+                    disconnected_clients.append(client)
 
             if len(disconnected_clients) > 0:
                 for client in disconnected_clients:

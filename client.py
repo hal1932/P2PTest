@@ -16,19 +16,6 @@ NSQD_HTTP_ADDRESS = '127.0.0.1:4151'
 NSQD_TCP_ADDRESSES = ['127.0.0.1:4150', ]
 
 
-def register_as_client():
-    url = 'http://{}/pub?topic=p2ptest_clients'.format(config.NSQD_HTTP_ADDRESS)
-    data = protocols.registration()
-    response = http.post_sync(url, data)
-    return response == 'OK'
-
-
-def on_receive_jobs(message):
-    message.enable_async()
-    print(message.body)
-    message.finish()
-
-
 def main(args):
     if not register_as_client():
         return -1
@@ -48,6 +35,19 @@ def main(args):
     )
     nsq.run()
     '''
+
+
+def register_as_client(content_port):
+    url = 'http://{}/pub?topic=p2ptest_clients'.format(config.NSQD_HTTP_ADDRESS)
+    data = protocols.registration(content_port)
+    response = http.post_sync(url, data)
+    return response == 'OK'
+
+
+def on_receive_jobs(message):
+    message.enable_async()
+    print(message.body)
+    message.finish()
 
 
 if __name__ == '__main__':

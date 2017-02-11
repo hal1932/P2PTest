@@ -24,8 +24,8 @@ def deserialize(data):
     return Protocol(data)
 
 
-def registration():
-    data = __create_container('register')
+def registration(notification_port):
+    data = __create_container('register', {'notification_port': notification_port})
     return serialize(data)
 
 
@@ -33,7 +33,7 @@ def __create_container(operation, arguments=None):
     data = {
         'host': hostinfo.get_ipv4_address(),
         'user': hostinfo.get_user(),
-        'ope': operation
+        'ope': operation,
     }
 
     if arguments is not None:

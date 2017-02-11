@@ -1,10 +1,10 @@
 # encoding: utf-8
-from __future__ import print_function
-
 import config
 import protocols
 import http
 import content_server
+import log
+import utils
 
 import nsq
 
@@ -12,44 +12,62 @@ import sys
 import functools
 import time
 
-NSQD_HTTP_ADDRESS = '127.0.0.1:4151'
-NSQD_TCP_ADDRESSES = ['127.0.0.1:4150', ]
-
 
 def main(args):
-    if not _register_as_client():
-        return -1
+    log.write('request the client registration')
+    error = _request_client_registration()
+    if error is not None:
+        log.error_exit(-1, 'failed to request the client registration: {}'.format(error))
 
-    server = content_server.ContentServer(1234)
-    server.start()
+    log.write('wait for the server-side client registration')
+    error = _wait_for_registration_complete()
+    if error is not None:
+        log.error_exit(-1, 'failed to the client registration: {}'.format(error))
 
-    time.sleep(5)
-    server.stop()
+    log.write('start ContentServer')
+    cv = content_server.ContentServer().start()
+    time.sleep(3)
+    cv.stop()
 
     '''
-    nsq.Reader(
-        topic='p2ptest_jobs',
-        channel='test',
-        message_handler=_on_receive_jobs,
-        nsqd_tcp_addresses=NSQD_TCP_ADDRESSES,
-    )
+    utils.create_nsq_reader('p2ptest_jobs', _on_receive_jobs)
     nsq.run()
     '''
 
 
-def _register_as_client(content_port):
-    url = 'http://{}/pub?topic=p2ptest_clients'.format(config.NSQD_HTTP_ADDRESS)
-    data = protocols.registration(content_port)
-    response = http.post_sync(url, data)
-    return response == 'OK'
+def _request_client_registration():
+    data = protocols.registration(49152)
+
+    # for debug
+    import hostinfo
+    import random
+    data = data.replace(hostinfo.get_user(), str(random.randint(0, 100)))
+
+    code, result = http.nsq_pub_sync('p2ptest_register_client', data)
+    if code == 200 and result == 'OK':
+        return None
+    return result
+
+
+def _wait_for_registration_complete():
+    def _predicate(queries):
+        if 'result' in queries:
+            if len(queries['result']) == 1:
+                return True
+        return False
+
+    result = http.wait_for_get_request(49152, _predicate)
+    if result['result'][0] != 'OK':
+        return result['result'][0]
+
+    return None
 
 
 def _on_receive_jobs(message):
     message.enable_async()
-    print(message.body)
+    log.write(message.body)
     message.finish()
 
 
 if __name__ == '__main__':
-    result = main(sys.argv)
-    sys.exit(result)
+    sys.exit(main(sys.argv))

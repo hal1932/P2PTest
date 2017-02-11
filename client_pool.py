@@ -66,26 +66,31 @@ class ClientPool(object):
         data = protocols.deserialize(message.body)
         message.finish()
 
+        operation = data['ope']
+        user = data['user']
+        host = data['host']
+        arguments = data['args']
+
         log.write(data)
 
         error = None
 
-        if error is None and data.operation != 'register':
+        if error is None and operation != 'register':
             error = 'invalid registration request: {}'.format(data)
 
-        if error is None and 'notification_port' not in data.arguments:
-            error = 'invalid registration arguments: {}'.format(data.arguments)
+        if error is None and 'notification_port' not in arguments:
+            error = 'invalid registration arguments: {}'.format(arguments)
 
         if error is None:
-            notification_port = data.arguments['notification_port']
-            error = instance.__register_client(data.host, data.user, notification_port)
+            notification_port = arguments['notification_port']
+            error = instance.__register_client(host, user, notification_port)
 
         if error is not None:
             log.warning('registration error: {}'.format(error))
-            instance.__register_client_complete(data.host, notification_port, error)
+            instance.__register_client_complete(host, notification_port, error)
             return
 
-        log.write('accept client: {} {}'.format(data.host, data.user))
+        log.write('accept client: {} {}'.format(host, user))
 
     def __register_client(self, host, user, notification_port):
         with self.__clients_lock:

@@ -4,24 +4,12 @@ import hostinfo
 import json
 
 
-class Protocol(object):
-    def __init__(self, data):
-        self.host = data['host']
-        self.user = data['user']
-        self.operation = data['ope']
-
-        self.arguments = None
-        if 'args' in data:
-            self.arguments = data['args']
-
-
 def serialize(data):
     return json.dumps(data)
 
 
 def deserialize(data):
-    data = json.loads(data)
-    return Protocol(data)
+    return json.loads(data)
 
 
 def registration(notification_port):

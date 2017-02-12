@@ -96,10 +96,12 @@ def _request_query_clients(query, receiving_port):
         return []
 
 
+'''
 def _on_receive_jobs(message):
     message.enable_async()
     log.write(message.body)
     message.finish()
+'''
 
 
 if __name__ == '__main__':

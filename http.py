@@ -1,9 +1,9 @@
 # encoding: utf-8
 import config
 
-import pycurl
+import requests
+import requests.exceptions
 
-import StringIO
 import SocketServer
 import threading
 import SimpleHTTPServer
@@ -15,37 +15,23 @@ RESULT_SUCCESS = 'OK'
 NSQ_HTTP_PUB_RESULT_SUCCESS = 'OK'
 
 
+RequestError = requests.exceptions.RequestException
+
+
 def get_sync(url, timeout=None):
-    response = StringIO.StringIO()
-
-    curl = pycurl.Curl()
-    curl.setopt(pycurl.URL, url)
-    curl.setopt(pycurl.WRITEDATA, response)
-    if timeout is not None:
-        curl.setopt(pycurl.TIMEOUT, timeout)
-    curl.perform()
-
-    code = curl.getinfo(pycurl.RESPONSE_CODE)
-    curl.close()
-
-    return code, response.getvalue()
+    kwargs = {}
+    if time is not None:
+        kwargs['timeout'] = (timeout, timeout)
+    response = requests.get(url, **kwargs)
+    return response.status_code, response.text
 
 
 def post_sync(url, data, timeout=None):
-    response = StringIO.StringIO()
-
-    curl = pycurl.Curl()
-    curl.setopt(pycurl.URL, url)
-    curl.setopt(pycurl.POSTFIELDS, data)
-    curl.setopt(pycurl.WRITEDATA, response)
-    if timeout is not None:
-        curl.setopt(pycurl.TIMEOUT, timeout)
-    curl.perform()
-
-    code = curl.getinfo(pycurl.RESPONSE_CODE)
-    curl.close()
-
-    return code, response.getvalue()
+    kwargs = {}
+    if time is not None:
+        kwargs['timeout'] = (timeout, timeout)
+    response = requests.post(url, data, **kwargs)
+    return response.status_code, response.text
 
 
 def nsq_pub_sync(topic, data, timeout=None):

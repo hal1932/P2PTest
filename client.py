@@ -78,7 +78,7 @@ def _wait_for_registration_complete(notification_port):
 def _request_query_clients(query, receiving_port):
     data = protocols.query_clients(query, receiving_port)
     code, result = http.nsq_pub_sync(config.TOPIC_QUERY_CLIENTS, data)
-    if code != 200 or result != config.NSQ_HTTP_PUB_RESULT_SUCCESS:
+    if code != 200 or result != http.NSQ_HTTP_PUB_RESULT_SUCCESS:
         log.warning('failed to the request querying clients')
         return []
 

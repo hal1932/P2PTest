@@ -6,8 +6,6 @@ import log
 import utils
 import client_info
 
-import pycurl
-
 import functools
 import urllib
 import threading
@@ -25,7 +23,10 @@ class ClientPool(object):
                 log.write('client is disconnected: {}'.format(client.host))
                 self.__clients.remove(client)
 
-        self.__client_watcher_thread = _ClientWatcherThread(self.__clients, _on_client_disconnected)
+        self.__client_watcher_thread = _ClientWatcherThread(
+            self.__clients,
+            _on_client_disconnected,
+            config.PEER_PING_TIMEOUT)
 
     @property
     def clients(self):
@@ -108,7 +109,7 @@ class ClientPool(object):
         return code == 200
 
     def __test_register_client(self, host, user):
-        if len(self.__clients) >= config.MAX_CLIENTS_COUNT:
+        if len(self.__clients) >= config.MAX_PEER_COUNT:
             return 'exceeding the acceptable number of clients'
 
         def _test_is_same_client(_client, _host, _user):
@@ -143,32 +144,26 @@ class _ClientWatcherThread(threading.Thread):
             disconnected_clients = []
             for client in self.__clients:
                 code = 0
-                timeout = False
+                is_client_alive = True
                 try:
                     code, _ = http.get_sync(client.ping_url, self.__timeout)
-                except pycurl.error as e:
-                    if e.args[0] == pycurl.E_OPERATION_TIMEDOUT:
-                        log.warning('ping to the client is timed out: {}'.format(client.ping_url))
-                        timeout = True
-                    else:
-                        raise e
+                except http.RequestError as e:
+                    log.warning('ping to the client is failed: {}'.format(client.ping_url))
+                    is_client_alive = False
+                except Exception as e:
+                    raise e
 
-                is_client_alive = not timeout
                 if is_client_alive and code == 200:
                     log.write('client is alive: {}'.format(client.ping_url))
-                elif not timeout:
-                    log.warning('client may be dead: {}, {}'.format(code, client.ping_url))
-                    is_client_alive = False
-
-                if not is_client_alive:
+                else:
                     disconnected_clients.append(client)
 
             if len(disconnected_clients) > 0:
                 for client in disconnected_clients:
                     self.__on_client_disconnected(client)
 
-            time.sleep(self.__polling_interval)
-            # time.sleep(1)
+            #time.sleep(self.__polling_interval)
+            time.sleep(1)
 
     def stop(self):
         self.__stop_event.set()

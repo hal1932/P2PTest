@@ -141,29 +141,19 @@ class _ClientWatcherThread(threading.Thread):
             if self.__stop_event.is_set():
                 break
 
-            disconnected_clients = []
-            for client in self.__clients:
-                code = 0
-                is_client_alive = True
-                try:
-                    code, _ = http.get_sync(client.ping_url, self.__timeout)
-                except http.RequestError as e:
-                    log.warning('ping to the client is failed: {}'.format(client.ping_url))
-                    is_client_alive = False
-                except Exception as e:
-                    raise e
+            if len(self.__clients) > 0:
+                clients = {client.ping_url: client for client in self.__clients}
+                result = http.get_all_sync(clients.keys(), self.__timeout)
+                for item in result.items():
+                    url, (code, _) = item
+                    if code == 200:
+                        log.write('client is alive: {}'.format(url))
+                    else:
+                        log.warning('ping to the client is failed: {}'.format(url))
+                        self.__on_client_disconnected(clients[url])
 
-                if is_client_alive and code == 200:
-                    log.write('client is alive: {}'.format(client.ping_url))
-                else:
-                    disconnected_clients.append(client)
-
-            if len(disconnected_clients) > 0:
-                for client in disconnected_clients:
-                    self.__on_client_disconnected(client)
-
-            #time.sleep(self.__polling_interval)
-            time.sleep(1)
+            time.sleep(self.__polling_interval)
+            # time.sleep(1)
 
     def stop(self):
         self.__stop_event.set()

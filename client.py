@@ -33,7 +33,7 @@ def main(args):
     other_clients = _request_query_clients(
         config.QUERY_CLIENTS_FINDALL, query_receiving_port)
     log.write(other_clients)
-    time.sleep(10)
+    time.sleep(3)
 
     cv.stop()
 

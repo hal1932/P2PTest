@@ -3,6 +3,7 @@ import config
 
 import requests
 import requests.exceptions
+import grequests
 
 import SocketServer
 import threading
@@ -24,6 +25,31 @@ def get_sync(url, timeout=None):
         kwargs['timeout'] = (timeout, timeout)
     response = requests.get(url, **kwargs)
     return response.status_code, response.text
+
+
+def get_all_sync(urls, timeout=None):
+    kwargs = {}
+    if time is not None:
+        kwargs['timeout'] = (timeout, timeout)
+
+    request_set = (grequests.get(url, timeout=(timeout, timeout)) for url in urls)
+
+    tmp = {'errors': {}}
+
+    def _exception_handler(request, exception):
+        tmp['errors'][request.url] = exception
+
+    response_set = grequests.map(request_set, exception_handler=_exception_handler)
+
+    result = {}
+    for response in response_set:
+        if response is not None:
+            result[response.url] = (response.status_code, response.content)
+
+    for url, exception in tmp['errors'].items():
+        result[url] = (0, exception)
+
+    return result
 
 
 def post_sync(url, data, timeout=None):

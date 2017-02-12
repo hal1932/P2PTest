@@ -104,8 +104,12 @@ class ClientPool(object):
         else:
             result = urllib.quote(error)
 
-        code, _ = http.get_sync(
-            'http://{}:{}?result={}'.format(host, notification_port, result))
+        url = 'http://{}:{}?result={}'.format(host, notification_port, result)
+        try:
+            code, _ = http.get_sync(url)
+        except Exception as e:
+            log.warning('{}\n{}'.format(url, e))
+            return False
         return code == 200
 
     def __test_register_client(self, host, user):

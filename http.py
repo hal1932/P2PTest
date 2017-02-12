@@ -67,8 +67,11 @@ def nsq_pub_sync(topic, data, timeout=None):
 
 class ServerBase(object):
 
-    def __init__(self, host, port, handler):
+    def __init__(self, host, port, handler, server_parameters=None):
         server = SocketServer.ThreadingTCPServer((host, port), handler)
+        if server_parameters is not None:
+            server.parameters = server_parameters
+
         serve_thread = threading.Thread(target=server.serve_forever)
         serve_thread.daemon = True
 

@@ -4,12 +4,10 @@ import protocols
 import http
 import content_server
 import log
-import utils
 
 import nsq
 
 import sys
-import functools
 import time
 import random
 import json
@@ -27,13 +25,13 @@ def main(args):
         log.error_exit(-1, 'failed to the client registration: {}'.format(error))
 
     log.write('start ContentServer at port {}'.format(content_port))
-    cv = content_server.ContentServer(content_port).start()
+    cv = content_server.ContentServer(content_port, config.PEER_CONTENT_ROOT).start()
 
     query_receiving_port = max(notification_port, content_port) + 1
     other_clients = _request_query_clients(
         config.QUERY_CLIENTS_FINDALL, query_receiving_port)
     log.write(other_clients)
-    time.sleep(3)
+    time.sleep(30)
 
     cv.stop()
 

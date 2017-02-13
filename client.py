@@ -11,6 +11,7 @@ import sys
 import time
 import random
 import json
+import urllib
 
 
 def main(args):
@@ -20,17 +21,21 @@ def main(args):
         log.error_exit(-1, 'failed to request the client registration: {}'.format(error))
 
     log.write('wait for the server-side client registration at port {}'.format(notification_port))
-    error = _wait_for_registration_complete(notification_port)
+    error, (server_host, server_port) = _wait_for_registration_complete(notification_port)
     if error is not None:
         log.error_exit(-1, 'failed to the client registration: {}'.format(error))
+
+    log.write('received the query server address: {}:{}'.format(server_host, server_port))
 
     log.write('start ContentServer at port {}'.format(content_port))
     cv = content_server.ContentServer(content_port, config.PEER_CONTENT_ROOT).start()
 
     query_receiving_port = max(notification_port, content_port) + 1
-    other_clients = _request_query_clients(
-        config.QUERY_CLIENTS_FINDALL, query_receiving_port)
-    log.write(other_clients)
+    all_clients = _request_query_clients(
+        config.QUERY_CLIENTS_FINDALL,
+        server_host, server_port,
+        query_receiving_port)
+    log.write(all_clients)
     time.sleep(30)
 
     cv.stop()
@@ -67,15 +72,22 @@ def _wait_for_registration_complete(notification_port):
         return False
 
     result = http.wait_for_get_request(notification_port, _predicate)
-    if result['result'][0] != http.RESULT_SUCCESS:
-        return result['result'][0]
+    result = json.loads(urllib.unquote(result['result'][0]))
+    if result['ope'] != 'notify_address':
+        return 'failed to be notified the server address: {}'.format(result), (None, None)
+    server_host = result['host']
+    server_port = result['args']['port']
 
-    return None
+    return None, (server_host, server_port)
 
 
-def _request_query_clients(query, receiving_port):
+def _request_query_clients(query, server_host, server_port, receiving_port):
     data = protocols.query_clients(query, receiving_port)
-    code, result = http.nsq_pub_sync(config.TOPIC_QUERY_CLIENTS, data)
+
+    url = 'http://{}:{}'.format(server_host, server_port)
+    code, result = http.get_sync(url)
+    log.debug('{} {}'.format(code, result))
+    #code, result = http.nsq_pub_sync(config.TOPIC_QUERY_CLIENTS, data)
     if code != 200 or result != http.NSQ_HTTP_PUB_RESULT_SUCCESS:
         log.warning('failed to the request querying clients')
         return []

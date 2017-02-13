@@ -29,6 +29,15 @@ def registration(notification_port, content_port):
     return serialize(data)
 
 
+def notify_address(port):
+    data = __create_container(
+        'notify_address',
+        {
+            'port': port,
+        })
+    return serialize(data)
+
+
 def query_clients(query, reply_port):
     data = __create_container(
         'query_clients',

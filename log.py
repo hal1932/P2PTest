@@ -10,6 +10,11 @@ def write(message):
     print('[{}] {}'.format(time, message))
 
 
+def debug(message):
+    time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    print('[{}] [DEBUG] {}'.format(time, message))
+
+
 def warning(message):
     time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     print('[{}] [WARNING] {}'.format(time, message), file=sys.stderr)

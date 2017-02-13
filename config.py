@@ -14,6 +14,5 @@ MAX_PEER_COUNT = 100
 PEER_PING_TIMEOUT = 5
 
 TOPIC_REGISTER_CLIENT = 'p2ptest_register_client'
-TOPIC_QUERY_CLIENTS = 'p2ptest_query_clients'
 
 QUERY_CLIENTS_FINDALL = 'find_all'

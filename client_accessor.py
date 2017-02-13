@@ -12,14 +12,18 @@ import json
 
 class ClientAccessor(object):
 
-    def __init__(self, client_pool):
+    def __init__(self, query_server, client_pool):
+        self.__query_server = query_server
         self.__client_pool = client_pool
 
     def start_accepting_query(self):
+        pass
+        '''
         utils.create_nsq_reader(
             config.TOPIC_QUERY_CLIENTS,
             functools.partial(ClientAccessor.__on_received_query, instance=self)
         )
+        '''
 
     @staticmethod
     def __on_received_query(message, instance):

@@ -14,9 +14,10 @@ import time
 
 class ClientPool(object):
 
-    def __init__(self):
+    def __init__(self, query_server):
         self.__clients = []
         self.__clients_lock = threading.Lock()
+        self.__query_server = query_server
 
         def _on_client_disconnected(client):
             with self.__clients_lock:
@@ -100,11 +101,11 @@ class ClientPool(object):
 
     def __register_client_complete(self, host, notification_port, error=None):
         if error is None:
-            result = http.RESULT_SUCCESS
+            result = self.__query_server.create_notification()
         else:
-            result = urllib.quote(error)
+            result = error
 
-        url = 'http://{}:{}?result={}'.format(host, notification_port, result)
+        url = 'http://{}:{}?result={}'.format(host, notification_port, urllib.quote(result))
         try:
             code, _ = http.get_sync(url)
         except Exception as e:
